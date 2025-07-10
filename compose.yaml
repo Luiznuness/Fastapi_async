@@ -1,0 +1,39 @@
+services:
+  fastasync_database:
+    image: postgres
+    environment:
+      POSTGRES_USER: app_user 
+      POSTGRES_DB: app_db
+      POSTGRES_PASSWORD: app_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  fastasync_app:
+    image: fast_async
+    build: .
+    entrypoint: ./entrypoint.sh
+    ports:
+      - "8000:8000"
+    depends_on:
+      - fastasync_database
+    environment:
+      DATABASE_URL: "postgresql+psycopg://app_user:app_password@fastasync_database:5432/app_db"
+volumes:
+  pgdata:
+
+# O fastasync_app é utilizado para:
+  # Sobe a imagem da minha aplicação na porta 8000:8000
+  # Para que esse container seja 'upado' ele tem que updar primeiro o fastasync_database
+
+# O fastasync_database é utilizado para:
+  # Sobe uma imagem do postgres na porta 5432:5432
+
+# O entrypoint é utilizado para:
+  # Executar um arquivo .sh todas as vezes que o docker compose é acionado.
+  # Os comando basicamente sobre as migrações do banco de dados e depois sobe a aplicação com uvicorn
+
+
+# O Volumes é utilizado para:
+  # Montar um caminho onde o PostgreSQL salva os dados dentro do container,
+  # garantindo que os dados do banco não se percam ao reiniciar o container.
