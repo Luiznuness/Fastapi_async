@@ -10,7 +10,7 @@ __pycache__/
 # project stuff
 database.db
 Dockerfile
-docker-compose.yml
+compose.yaml
 
 # C extensions
 *.so
